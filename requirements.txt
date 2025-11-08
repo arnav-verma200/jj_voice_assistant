@@ -1,0 +1,11 @@
+selenium
+webdriver-manager
+SpeechRecognition
+keyboard
+pyttsx3
+pyautogui
+PyAudio
+opencv-python
+mediapipe
+pycaw
+comtypes

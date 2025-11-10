@@ -12,6 +12,10 @@ class Config:
     CHROME_PATH = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
     USER_DATA_DIR = os.path.join(os.path.expanduser("~"), "ChromeAutomation")
     
+    # Gemini API settings
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyD9lxqOHZDlBiISPqmlG0Hdd-5QQk0DNCs")
+    GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent"
+    
     # Voice settings
     SPEECH_RATE = 175
     SPEECH_VOLUME = 0.9

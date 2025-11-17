@@ -3,11 +3,10 @@ Browser-related commands (search, open websites)
 """
 
 import os
-import json
 import shutil
 import webbrowser
 import winreg
-import requests
+import json
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
@@ -15,12 +14,242 @@ from selenium.webdriver.support import expected_conditions as EC
 from config import Config
 from utils.tts import speak
 
+try:
+    from google import genai
+    GEMINI_AVAILABLE = True
+except ImportError:
+    GEMINI_AVAILABLE = False
+
 
 class BrowserCommands:
     """Handle browser-related operations"""
     
     def __init__(self, driver_manager):
         self.driver_manager = driver_manager
+        self.gemini_client = None
+        self._initialize_ai()
+    
+    def _initialize_ai(self):
+        """Initialize Gemini AI for smart URL detection"""
+        if GEMINI_AVAILABLE and Config.GEMINI_API_KEY != "your_api_key_here":
+            try:
+                self.gemini_client = genai.Client(api_key=Config.GEMINI_API_KEY)
+                print("✅ AI-powered website opening enabled")
+            except Exception as e:
+                print(f"⚠️ AI initialization failed: {e}")
+    
+    def _get_smart_url(self, name):
+        """Use AI to figure out the correct URL"""
+        if not self.gemini_client:
+            return None
+        
+        print("skjdbbvdbvdbvjdbhv,jdsbvjsdhbfvjdbhfvljsdbhfvsjhbfvljsdhbfvlsjdhbvlsjdbhvljsdbhvlsjdbhvjlsdbvhljhbvlsjbvhfjlsdbvhldsjfbvljdsvbljdsfvhbl.sjhvbsjv")
+        
+        prompt = f"""Given the user wants to open: "{name}"
+
+Your job:
+- Determine the most likely correct URL.
+- Handle ALL major categories:
+    • Popular sites (YouTube, IG, FB, etc.)
+    • Government sites (NTA, Aadhaar, Passport, SIH, DigiLocker, etc.)
+    • Exam sites (JEE Mains, JEE Advanced, NEET, CUET, UPSC, SSC, etc.)
+    • College/university websites
+    • Tech services
+    • Shopping sites
+    • Banking sites
+    • OTT platforms
+    • Apps/services that have an obvious official website
+- Remove words like "open", "website", "visit", "go to", etc.
+- Respond ONLY using valid JSON (no markdown, no backticks).
+
+Format:
+{
+  "url": "https://example.com",
+  "confidence": 0.0-1.0
+}
+
+---------------------------------
+COMMON WEBSITE EXAMPLES
+---------------------------------
+Input: "youtube"
+Output: {"url": "https://www.youtube.com", "confidence": 0.99}
+
+Input: "facebook"
+Output: {"url": "https://www.facebook.com", "confidence": 0.99}
+
+Input: "instagram"
+Output: {"url": "https://www.instagram.com", "confidence": 0.99}
+
+Input: "twitter"
+Output: {"url": "https://x.com", "confidence": 0.95}
+
+Input: "reddit"
+Output: {"url": "https://www.reddit.com", "confidence": 0.99}
+
+Input: "github"
+Output: {"url": "https://github.com", "confidence": 0.99}
+
+---------------------------------
+SPECIAL CASES (GOVERNMENT & OFFICIAL)
+---------------------------------
+Input: "open sih website"
+Output: {"url": "https://sih.gov.in", "confidence": 0.97}
+
+Input: "aadhaar"
+Output: {"url": "https://uidai.gov.in", "confidence": 0.98}
+
+Input: "passport"
+Output: {"url": "https://www.passportindia.gov.in", "confidence": 0.98}
+
+Input: "pan card"
+Output: {"url": "https://www.onlineservices.nsdl.com", "confidence": 0.95}
+
+Input: "digilocker"
+Output: {"url": "https://www.digilocker.gov.in", "confidence": 0.98}
+
+Input: "pm modi website"
+Output: {"url": "https://www.pmindia.gov.in", "confidence": 0.95}
+
+Input: "cowin"
+Output: {"url": "https://www.cowin.gov.in", "confidence": 0.98}
+
+---------------------------------
+EXAM + EDUCATION SPECIAL CASES
+---------------------------------
+Input: "jee mains website"
+Output: {"url": "https://jeemain.nta.ac.in", "confidence": 0.97}
+
+Input: "jee advanced"
+Output: {"url": "https://jeeadv.ac.in", "confidence": 0.97}
+
+Input: "neet"
+Output: {"url": "https://exams.nta.ac.in/NEET", "confidence": 0.97}
+
+Input: "cuet"
+Output: {"url": "https://cuet.samarth.ac.in", "confidence": 0.97}
+
+Input: "upsc"
+Output: {"url": "https://www.upsc.gov.in", "confidence": 0.98}
+
+Input: "ssc"
+Output: {"url": "https://ssc.nic.in", "confidence": 0.98}
+
+Input: "gate exam"
+Output: {"url": "https://gate2025.iisc.ac.in", "confidence": 0.95}
+
+---------------------------------
+COLLEGE / UNIVERSITY SPECIAL CASES
+---------------------------------
+Input: "jiit 62 website"
+Output: {"url": "https://www.jiit.ac.in", "confidence": 0.95}
+
+Input: "iit bombay"
+Output: {"url": "https://www.iitb.ac.in", "confidence": 0.97}
+
+Input: "iit delhi"
+Output: {"url": "https://home.iitd.ac.in", "confidence": 0.97}
+
+Input: "nit warangal"
+Output: {"url": "https://www.nitw.ac.in", "confidence": 0.95}
+
+Input: "vit vellore"
+Output: {"url": "https://www.vit.ac.in", "confidence": 0.95}
+
+Input: "amu"
+Output: {"url": "https://www.amu.ac.in", "confidence": 0.95}
+
+---------------------------------
+SHOPPING SPECIAL CASES
+---------------------------------
+Input: "amazon"
+Output: {"url": "https://www.amazon.in", "confidence": 0.99}
+
+Input: "flipkart"
+Output: {"url": "https://www.flipkart.com", "confidence": 0.99}
+
+Input: "myntra"
+Output: {"url": "https://www.myntra.com", "confidence": 0.99}
+
+Input: "ajio"
+Output: {"url": "https://www.ajio.com", "confidence": 0.99}
+
+---------------------------------
+BANKING SPECIAL CASES
+---------------------------------
+Input: "sbi"
+Output: {"url": "https://www.onlinesbi.sbi", "confidence": 0.98}
+
+Input: "hdfc bank"
+Output: {"url": "https://www.hdfcbank.com", "confidence": 0.98}
+
+Input: "icici"
+Output: {"url": "https://www.icicibank.com", "confidence": 0.98}
+
+Input: "axis bank"
+Output: {"url": "https://www.axisbank.com", "confidence": 0.98}
+
+---------------------------------
+OTT SPECIAL CASES
+---------------------------------
+Input: "netflix"
+Output: {"url": "https://www.netflix.com", "confidence": 0.99}
+
+Input: "amazon prime"
+Output: {"url": "https://www.primevideo.com", "confidence": 0.99}
+
+Input: "hotstar"
+Output: {"url": "https://www.hotstar.com", "confidence": 0.99}
+
+Input: "zee5"
+Output: {"url": "https://www.zee5.com", "confidence": 0.99}
+
+---------------------------------
+TECH SERVICES
+---------------------------------
+Input: "chatgpt"
+Output: {"url": "https://chat.openai.com", "confidence": 0.99}
+
+Input: "claude"
+Output: {"url": "https://claude.ai", "confidence": 0.99}
+
+Input: "gemini"
+Output: {"url": "https://gemini.google.com", "confidence": 0.99}
+
+Input: "gmail"
+Output: {"url": "https://mail.google.com", "confidence": 0.95}
+
+Input: "drive"
+Output: {"url": "https://drive.google.com", "confidence": 0.95}
+
+---------------------------------
+
+Now determine the URL for: "{name}"
+"""
+
+
+        try:
+            response = self.gemini_client.models.generate_content(
+                model=Config.GEMINI_MODEL,
+                contents=prompt
+            )
+            
+            response_text = response.text.strip()
+            
+            # Clean response
+            if response_text.startswith("```json"):
+                response_text = response_text.replace("```json", "").replace("```", "").strip()
+            elif response_text.startswith("```"):
+                response_text = response_text.replace("```", "").strip()
+            
+            data = json.loads(response_text)
+            
+            if data.get("confidence", 0) > 0.8:
+                return data.get("url")
+            
+        except Exception as e:
+            print(f"⚠️ AI URL detection failed: {e}")
+        
+        return None
     
     @staticmethod
     def has_protocol(name):
@@ -37,116 +266,6 @@ class BrowserCommands:
         except:
             return False
     
-    @staticmethod
-    def get_url_from_gemini(website_name):
-        """Use Gemini API to get the correct URL for a website"""
-        input_mode = Config.get_input_mode()
-        
-        if Config.GEMINI_API_KEY == "YOUR_GEMINI_API_KEY_HERE":
-            print("⚠️ Gemini API key not configured. Using fallback URL creation.")
-            if input_mode == "voice_continuous":
-                speak("API key not configured, using fallback")
-            return None
-        
-        try:
-            prompt = f"""Given the website name or description: "{website_name}"
-
-Please provide ONLY the complete, correct URL for this website.
-
-Rules:
-1. Return ONLY the URL, nothing else
-2. Include https://
-3. If it's a well-known site, use the exact official URL
-4. If it's ambiguous, use the most popular/official version
-5. For partial names, expand to full URL (e.g., "github" -> "https://github.com")
-6. For government/organization sites, use appropriate domain (e.g., ".gov.in", ".org", ".edu")
-7. For regional variants, use the correct country domain (e.g., "amazon india" -> ".in")
-8. For acronyms or abbreviations, identify the full official website
-9. Do not include explanations or alternatives
-
-Examples:
-- "github" -> https://github.com
-- "twitter" -> https://twitter.com
-- "amazon india" -> https://www.amazon.in
-- "reddit" -> https://www.reddit.com
-- "sih" -> https://www.sih.gov.in
-- "sih website" -> https://www.sih.gov.in
-- "amazon" -> https://www.amazon.com
-- "flipkart" -> https://www.flipkart.com
-- "netflix" -> https://www.netflix.com
-- "instagram" -> https://www.instagram.com
-- "linkedin" -> https://www.linkedin.com
-- "stack overflow" -> https://stackoverflow.com
-- "medium" -> https://medium.com
-
-Now provide the URL for: "{website_name}" """
-
-            headers = {
-                "Content-Type": "application/json"
-            }
-            
-            payload = {
-                "contents": [{
-                    "parts": [{
-                        "text": prompt
-                    }]
-                }],
-                "generationConfig": {
-                    "temperature": 0.1,
-                    "maxOutputTokens": 100,
-                }
-            }
-            
-            api_url = f"{Config.GEMINI_API_URL}?key={Config.GEMINI_API_KEY}"
-            
-            if input_mode != "voice_continuous":
-                print("🤖 Asking Gemini for the correct URL...")
-            
-            response = requests.post(api_url, headers=headers, json=payload, timeout=10)
-            
-            if response.status_code == 200:
-                result = response.json()
-                if "candidates" in result and len(result["candidates"]) > 0:
-                    url = result["candidates"][0]["content"]["parts"][0]["text"].strip()
-                    
-                    # Clean up the response - remove any markdown or extra text
-                    url = url.replace("```", "").strip()
-                    
-                    # Extract just the URL if there's extra text
-                    if " " in url:
-                        # Try to find the URL in the text
-                        words = url.split()
-                        for word in words:
-                            if word.startswith("http"):
-                                url = word
-                                break
-                    
-                    # Ensure it starts with http
-                    if not url.startswith("http"):
-                        if url.startswith("www."):
-                            url = "https://" + url
-                        else:
-                            url = "https://www." + url
-                    
-                    if input_mode != "voice_continuous":
-                        print(f"✅ Gemini found: {url}")
-                    
-                    return url
-            
-            print(f"⚠️ Gemini API error: {response.status_code}")
-            return None
-            
-        except requests.exceptions.Timeout:
-            print("⚠️ Gemini API timeout. Using fallback.")
-            if input_mode == "voice_continuous":
-                speak("API timeout, using fallback")
-            return None
-        except Exception as e:
-            print(f"⚠️ Error calling Gemini API: {e}")
-            if input_mode == "voice_continuous":
-                speak("API error, using fallback")
-            return None
-    
     def search_google(self, query):
         """Search Google for the given query"""
         input_mode = Config.get_input_mode()
@@ -157,7 +276,7 @@ Now provide the URL for: "{website_name}" """
         
         try:
             driver.get("https://www.google.com")
-            self.driver_manager.reset_whatsapp_status()
+            self.driver_manager.reset_whatsapp_status()  # Reset WhatsApp status
             
             wait = WebDriverWait(driver, 10)
             search_box = wait.until(
@@ -180,7 +299,7 @@ Now provide the URL for: "{website_name}" """
             self.driver_manager.cleanup()
     
     def open_app_or_website(self, name):
-        """Open an application or website using Gemini for URL resolution"""
+        """Open an application or website"""
         input_mode = Config.get_input_mode()
         driver = self.driver_manager.get_driver()
         
@@ -215,7 +334,7 @@ Now provide the URL for: "{website_name}" """
             if driver:
                 try:
                     driver.get("https://www.youtube.com")
-                    self.driver_manager.reset_whatsapp_status()
+                    self.driver_manager.reset_whatsapp_status()  # Reset WhatsApp status
                     
                     msg = "✅ Opened YouTube\n"
                     if input_mode == "voice_continuous":
@@ -234,7 +353,7 @@ Now provide the URL for: "{website_name}" """
             if driver:
                 try:
                     driver.get("https://web.whatsapp.com")
-                    self.driver_manager.reset_whatsapp_status()
+                    self.driver_manager.reset_whatsapp_status()  # Will need to verify login
                     
                     msg = "✅ Opening WhatsApp Web\n"
                     if input_mode == "voice_continuous":
@@ -250,15 +369,26 @@ Now provide the URL for: "{website_name}" """
                     self.driver_manager.cleanup()
         
         else:
-            # Use Gemini to get the correct URL
-            url = self.get_url_from_gemini(name)
+            # Try AI-powered URL detection
+            smart_url = self._get_smart_url(name)
             
-            # Fallback to simple URL creation if Gemini fails
-            if not url:
-                url = f"https://www.{name}.com" if "." not in name else f"https://{name}"
-                if input_mode != "voice_continuous":
-                    print(f"ℹ️ Using fallback URL: {url}")
+            if smart_url:
+                print(f"🤖 AI detected URL: {smart_url}")
+                if driver:
+                    try:
+                        driver.get(smart_url)
+                        self.driver_manager.reset_whatsapp_status()
+                        msg = f"✅ Opened {smart_url}\n"
+                        if input_mode == "voice_continuous":
+                            speak(f"Opened {name}")
+                        else:
+                            print(msg)
+                        return
+                    except:
+                        pass
             
+            # Fallback to traditional method
+            url = f"https://www.{name}.com" if "." not in name else f"https://{name}"
             webbrowser.open(url)
             msg = f"✅ Opened {url}\n"
             if input_mode == "voice_continuous":

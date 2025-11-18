@@ -10,3 +10,4 @@ mediapipe
 pycaw
 comtypes
 google-genai
+google-generativeai

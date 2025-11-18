@@ -15,7 +15,7 @@ from config import Config
 from utils.tts import speak
 
 try:
-    from google import genai
+    import google.generativeai as genai
     GEMINI_AVAILABLE = True
 except ImportError:
     GEMINI_AVAILABLE = False
@@ -26,25 +26,24 @@ class BrowserCommands:
     
     def __init__(self, driver_manager):
         self.driver_manager = driver_manager
-        self.gemini_client = None
+        self.gemini_model = None
         self._initialize_ai()
     
     def _initialize_ai(self):
         """Initialize Gemini AI for smart URL detection"""
         if GEMINI_AVAILABLE and Config.GEMINI_API_KEY != "your_api_key_here":
             try:
-                self.gemini_client = genai.Client(api_key=Config.GEMINI_API_KEY)
+                genai.configure(api_key=Config.GEMINI_API_KEY)
+                self.gemini_model = genai.GenerativeModel(Config.GEMINI_MODEL)
                 print("✅ AI-powered website opening enabled")
             except Exception as e:
                 print(f"⚠️ AI initialization failed: {e}")
     
     def _get_smart_url(self, name):
         """Use AI to figure out the correct URL"""
-        if not self.gemini_client:
+        if not self.gemini_model:
             return None
-        
-        print("skjdbbvdbvdbvjdbhv,jdsbvjsdhbfvjdbhfvljsdbhfvsjhbfvljsdhbfvlsjdhbvlsjdbhvljsdbhvlsjdbhvjlsdbvhljhbvlsjbvhfjlsdbvhldsjfbvljdsvbljdsfvhbl.sjhvbsjv")
-        
+                
         prompt = f"""Given the user wants to open: "{name}"
 
 Your job:
@@ -63,163 +62,163 @@ Your job:
 - Respond ONLY using valid JSON (no markdown, no backticks).
 
 Format:
-{
+{{
   "url": "https://example.com",
   "confidence": 0.0-1.0
-}
+}}
 
 ---------------------------------
 COMMON WEBSITE EXAMPLES
 ---------------------------------
 Input: "youtube"
-Output: {"url": "https://www.youtube.com", "confidence": 0.99}
+Output: {{"url": "https://www.youtube.com", "confidence": 0.99}}
 
 Input: "facebook"
-Output: {"url": "https://www.facebook.com", "confidence": 0.99}
+Output: {{"url": "https://www.facebook.com", "confidence": 0.99}}
 
 Input: "instagram"
-Output: {"url": "https://www.instagram.com", "confidence": 0.99}
+Output: {{"url": "https://www.instagram.com", "confidence": 0.99}}
 
 Input: "twitter"
-Output: {"url": "https://x.com", "confidence": 0.95}
+Output: {{"url": "https://x.com", "confidence": 0.95}}
 
 Input: "reddit"
-Output: {"url": "https://www.reddit.com", "confidence": 0.99}
+Output: {{"url": "https://www.reddit.com", "confidence": 0.99}}
 
 Input: "github"
-Output: {"url": "https://github.com", "confidence": 0.99}
+Output: {{"url": "https://github.com", "confidence": 0.99}}
 
 ---------------------------------
 SPECIAL CASES (GOVERNMENT & OFFICIAL)
 ---------------------------------
 Input: "open sih website"
-Output: {"url": "https://sih.gov.in", "confidence": 0.97}
+Output: {{"url": "https://sih.gov.in", "confidence": 0.97}}
 
 Input: "aadhaar"
-Output: {"url": "https://uidai.gov.in", "confidence": 0.98}
+Output: {{"url": "https://uidai.gov.in", "confidence": 0.98}}
 
 Input: "passport"
-Output: {"url": "https://www.passportindia.gov.in", "confidence": 0.98}
+Output: {{"url": "https://www.passportindia.gov.in", "confidence": 0.98}}
 
 Input: "pan card"
-Output: {"url": "https://www.onlineservices.nsdl.com", "confidence": 0.95}
+Output: {{"url": "https://www.onlineservices.nsdl.com", "confidence": 0.95}}
 
 Input: "digilocker"
-Output: {"url": "https://www.digilocker.gov.in", "confidence": 0.98}
+Output: {{"url": "https://www.digilocker.gov.in", "confidence": 0.98}}
 
 Input: "pm modi website"
-Output: {"url": "https://www.pmindia.gov.in", "confidence": 0.95}
+Output: {{"url": "https://www.pmindia.gov.in", "confidence": 0.95}}
 
 Input: "cowin"
-Output: {"url": "https://www.cowin.gov.in", "confidence": 0.98}
+Output: {{"url": "https://www.cowin.gov.in", "confidence": 0.98}}
 
 ---------------------------------
 EXAM + EDUCATION SPECIAL CASES
 ---------------------------------
 Input: "jee mains website"
-Output: {"url": "https://jeemain.nta.ac.in", "confidence": 0.97}
+Output: {{"url": "https://jeemain.nta.ac.in", "confidence": 0.97}}
 
 Input: "jee advanced"
-Output: {"url": "https://jeeadv.ac.in", "confidence": 0.97}
+Output: {{"url": "https://jeeadv.ac.in", "confidence": 0.97}}
 
 Input: "neet"
-Output: {"url": "https://exams.nta.ac.in/NEET", "confidence": 0.97}
+Output: {{"url": "https://exams.nta.ac.in/NEET", "confidence": 0.97}}
 
 Input: "cuet"
-Output: {"url": "https://cuet.samarth.ac.in", "confidence": 0.97}
+Output: {{"url": "https://cuet.samarth.ac.in", "confidence": 0.97}}
 
 Input: "upsc"
-Output: {"url": "https://www.upsc.gov.in", "confidence": 0.98}
+Output: {{"url": "https://www.upsc.gov.in", "confidence": 0.98}}
 
 Input: "ssc"
-Output: {"url": "https://ssc.nic.in", "confidence": 0.98}
+Output: {{"url": "https://ssc.nic.in", "confidence": 0.98}}
 
 Input: "gate exam"
-Output: {"url": "https://gate2025.iisc.ac.in", "confidence": 0.95}
+Output: {{"url": "https://gate2025.iisc.ac.in", "confidence": 0.95}}
 
 ---------------------------------
 COLLEGE / UNIVERSITY SPECIAL CASES
 ---------------------------------
 Input: "jiit 62 website"
-Output: {"url": "https://www.jiit.ac.in", "confidence": 0.95}
+Output: {{"url": "https://www.jiit.ac.in", "confidence": 0.95}}
 
 Input: "iit bombay"
-Output: {"url": "https://www.iitb.ac.in", "confidence": 0.97}
+Output: {{"url": "https://www.iitb.ac.in", "confidence": 0.97}}
 
 Input: "iit delhi"
-Output: {"url": "https://home.iitd.ac.in", "confidence": 0.97}
+Output: {{"url": "https://home.iitd.ac.in", "confidence": 0.97}}
 
 Input: "nit warangal"
-Output: {"url": "https://www.nitw.ac.in", "confidence": 0.95}
+Output: {{"url": "https://www.nitw.ac.in", "confidence": 0.95}}
 
 Input: "vit vellore"
-Output: {"url": "https://www.vit.ac.in", "confidence": 0.95}
+Output: {{"url": "https://www.vit.ac.in", "confidence": 0.95}}
 
 Input: "amu"
-Output: {"url": "https://www.amu.ac.in", "confidence": 0.95}
+Output: {{"url": "https://www.amu.ac.in", "confidence": 0.95}}
 
 ---------------------------------
 SHOPPING SPECIAL CASES
 ---------------------------------
 Input: "amazon"
-Output: {"url": "https://www.amazon.in", "confidence": 0.99}
+Output: {{"url": "https://www.amazon.in", "confidence": 0.99}}
 
 Input: "flipkart"
-Output: {"url": "https://www.flipkart.com", "confidence": 0.99}
+Output: {{"url": "https://www.flipkart.com", "confidence": 0.99}}
 
 Input: "myntra"
-Output: {"url": "https://www.myntra.com", "confidence": 0.99}
+Output: {{"url": "https://www.myntra.com", "confidence": 0.99}}
 
 Input: "ajio"
-Output: {"url": "https://www.ajio.com", "confidence": 0.99}
+Output: {{"url": "https://www.ajio.com", "confidence": 0.99}}
 
 ---------------------------------
 BANKING SPECIAL CASES
 ---------------------------------
 Input: "sbi"
-Output: {"url": "https://www.onlinesbi.sbi", "confidence": 0.98}
+Output: {{"url": "https://www.onlinesbi.sbi", "confidence": 0.98}}
 
 Input: "hdfc bank"
-Output: {"url": "https://www.hdfcbank.com", "confidence": 0.98}
+Output: {{"url": "https://www.hdfcbank.com", "confidence": 0.98}}
 
 Input: "icici"
-Output: {"url": "https://www.icicibank.com", "confidence": 0.98}
+Output: {{"url": "https://www.icicibank.com", "confidence": 0.98}}
 
 Input: "axis bank"
-Output: {"url": "https://www.axisbank.com", "confidence": 0.98}
+Output: {{"url": "https://www.axisbank.com", "confidence": 0.98}}
 
 ---------------------------------
 OTT SPECIAL CASES
 ---------------------------------
 Input: "netflix"
-Output: {"url": "https://www.netflix.com", "confidence": 0.99}
+Output: {{"url": "https://www.netflix.com", "confidence": 0.99}}
 
 Input: "amazon prime"
-Output: {"url": "https://www.primevideo.com", "confidence": 0.99}
+Output: {{"url": "https://www.primevideo.com", "confidence": 0.99}}
 
 Input: "hotstar"
-Output: {"url": "https://www.hotstar.com", "confidence": 0.99}
+Output: {{"url": "https://www.hotstar.com", "confidence": 0.99}}
 
 Input: "zee5"
-Output: {"url": "https://www.zee5.com", "confidence": 0.99}
+Output: {{"url": "https://www.zee5.com", "confidence": 0.99}}
 
 ---------------------------------
 TECH SERVICES
 ---------------------------------
 Input: "chatgpt"
-Output: {"url": "https://chat.openai.com", "confidence": 0.99}
+Output: {{"url": "https://chat.openai.com", "confidence": 0.99}}
 
 Input: "claude"
-Output: {"url": "https://claude.ai", "confidence": 0.99}
+Output: {{"url": "https://claude.ai", "confidence": 0.99}}
 
 Input: "gemini"
-Output: {"url": "https://gemini.google.com", "confidence": 0.99}
+Output: {{"url": "https://gemini.google.com", "confidence": 0.99}}
 
 Input: "gmail"
-Output: {"url": "https://mail.google.com", "confidence": 0.95}
+Output: {{"url": "https://mail.google.com", "confidence": 0.95}}
 
 Input: "drive"
-Output: {"url": "https://drive.google.com", "confidence": 0.95}
+Output: {{"url": "https://drive.google.com", "confidence": 0.95}}
 
 ---------------------------------
 
@@ -228,11 +227,7 @@ Now determine the URL for: "{name}"
 
 
         try:
-            response = self.gemini_client.models.generate_content(
-                model=Config.GEMINI_MODEL,
-                contents=prompt
-            )
-            
+            response = self.gemini_model.generate_content(prompt)
             response_text = response.text.strip()
             
             # Clean response
@@ -243,7 +238,7 @@ Now determine the URL for: "{name}"
             
             data = json.loads(response_text)
             
-            if data.get("confidence", 0) > 0.8:
+            if data.get("confidence", 0) > 0:
                 return data.get("url")
             
         except Exception as e:
@@ -313,24 +308,27 @@ Now determine the URL for: "{name}"
                 speak(f"Opened {name}")
             else:
                 print(msg)
+            return
         
-        elif name in ["chrome", "msedge", "firefox"]:
+        if name in ["chrome", "msedge", "firefox"]:
             os.system(f"start {name}")
             msg = f"✅ Opened {name}\n"
             if input_mode == "voice_continuous":
                 speak(f"Opened {name}")
             else:
                 print(msg)
+            return
         
-        elif self.has_protocol(name):
+        if self.has_protocol(name):
             os.system(f"start {name}://")
             msg = f"✅ Opened {name}\n"
             if input_mode == "voice_continuous":
                 speak(f"Opened {name}")
             else:
                 print(msg)
+            return
         
-        elif "youtube" in name:
+        if "youtube" in name:
             if driver:
                 try:
                     driver.get("https://www.youtube.com")
@@ -341,6 +339,7 @@ Now determine the URL for: "{name}"
                         speak("Opened YouTube")
                     else:
                         print(msg)
+                    return
                 except Exception as e:
                     msg = f"❌ Error opening YouTube: {e}\n"
                     if input_mode == "voice_continuous":
@@ -348,8 +347,9 @@ Now determine the URL for: "{name}"
                     else:
                         print(msg)
                     self.driver_manager.cleanup()
+            return
         
-        elif "whatsapp" in name:
+        if "whatsapp" in name:
             if driver:
                 try:
                     driver.get("https://web.whatsapp.com")
@@ -360,6 +360,7 @@ Now determine the URL for: "{name}"
                         speak("Opening WhatsApp")
                     else:
                         print(msg)
+                    return
                 except Exception as e:
                     msg = f"❌ Error opening WhatsApp: {e}\n"
                     if input_mode == "voice_continuous":
@@ -367,31 +368,27 @@ Now determine the URL for: "{name}"
                     else:
                         print(msg)
                     self.driver_manager.cleanup()
+            return
         
-        else:
-            # Try AI-powered URL detection
-            smart_url = self._get_smart_url(name)
-            
-            if smart_url:
-                print(f"🤖 AI detected URL: {smart_url}")
-                if driver:
-                    try:
-                        driver.get(smart_url)
-                        self.driver_manager.reset_whatsapp_status()
-                        msg = f"✅ Opened {smart_url}\n"
-                        if input_mode == "voice_continuous":
-                            speak(f"Opened {name}")
-                        else:
-                            print(msg)
-                        return
-                    except:
-                        pass
-            
-            # Fallback to traditional method
-            url = f"https://www.{name}.com" if "." not in name else f"https://{name}"
-            webbrowser.open(url)
-            msg = f"✅ Opened {url}\n"
+        # Try AI-powered URL detection first
+        smart_url = self._get_smart_url(name)
+        
+        if smart_url:
+            print(f"🤖 AI detected URL: {smart_url}")
+            # Always use webbrowser.open for AI-detected URLs to avoid driver issues
+            webbrowser.open(smart_url)
+            msg = f"✅ Opened {smart_url}\n"
             if input_mode == "voice_continuous":
                 speak(f"Opened {name}")
             else:
                 print(msg)
+            return
+        
+        # Fallback to traditional method
+        url = f"https://www.{name}.com" if "." not in name else f"https://{name}"
+        webbrowser.open(url)
+        msg = f"✅ Opened {url}\n"
+        if input_mode == "voice_continuous":
+            speak(f"Opened {name}")
+        else:
+            print(msg)

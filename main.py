@@ -9,7 +9,7 @@ from commands.command_executor import CommandExecutor
 
 
 def print_welcome_banner():
-    """Display welcome banner and instructions"""
+    """Display welc ome banner and instructions"""
     print("=" * 60)
     print("🤖 jj - Voice Controlled Browser Automation")
     print("=" * 60)

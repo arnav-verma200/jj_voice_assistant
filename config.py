@@ -3,7 +3,7 @@ Configuration settings for JJ Voice Assistant
 """
 
 import os
-
+from dotenv import load_dotenv
 
 class Config:
     """Global configuration settings"""
@@ -25,7 +25,9 @@ class Config:
     SELENIUM_WAIT_TIMEOUT = 15
     
     # Gemini AI settings
-    GEMINI_API_KEY = ""  # Replace with your actual API key
+    load_dotenv()
+    API_KEY = os.getenv("GEMINI_API_KEY")
+    GEMINI_API_KEY = f"API_KEY"
     GEMINI_MODEL = "gemini-2.5-flash"
     
     # Global state

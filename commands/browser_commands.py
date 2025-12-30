@@ -35,7 +35,7 @@ class BrowserCommands:
             try:
                 genai.configure(api_key=Config.GEMINI_API_KEY)
                 self.gemini_model = genai.GenerativeModel(Config.GEMINI_MODEL)
-                print("✅ AI-powered website opening enabled")
+                print("-- AI-powered website opening enabled")
             except Exception as e:
                 print(f"⚠️ AI initialization failed: {e}")
     
@@ -67,9 +67,9 @@ Format:
   "confidence": 0.0-1.0
 }}
 
----------------------------------
+
 COMMON WEBSITE EXAMPLES
----------------------------------
+
 Input: "youtube"
 Output: {{"url": "https://www.youtube.com", "confidence": 0.99}}
 
@@ -88,9 +88,9 @@ Output: {{"url": "https://www.reddit.com", "confidence": 0.99}}
 Input: "github"
 Output: {{"url": "https://github.com", "confidence": 0.99}}
 
----------------------------------
+
 SPECIAL CASES (GOVERNMENT & OFFICIAL)
----------------------------------
+
 Input: "open sih website"
 Output: {{"url": "https://sih.gov.in", "confidence": 0.97}}
 
@@ -112,9 +112,9 @@ Output: {{"url": "https://www.pmindia.gov.in", "confidence": 0.95}}
 Input: "cowin"
 Output: {{"url": "https://www.cowin.gov.in", "confidence": 0.98}}
 
----------------------------------
+
 EXAM + EDUCATION SPECIAL CASES
----------------------------------
+
 Input: "jee mains website"
 Output: {{"url": "https://jeemain.nta.ac.in", "confidence": 0.97}}
 
@@ -136,9 +136,9 @@ Output: {{"url": "https://ssc.nic.in", "confidence": 0.98}}
 Input: "gate exam"
 Output: {{"url": "https://gate2025.iisc.ac.in", "confidence": 0.95}}
 
----------------------------------
+
 COLLEGE / UNIVERSITY SPECIAL CASES
----------------------------------
+
 Input: "jiit 62 website"
 Output: {{"url": "https://www.jiit.ac.in", "confidence": 0.95}}
 
@@ -157,9 +157,9 @@ Output: {{"url": "https://www.vit.ac.in", "confidence": 0.95}}
 Input: "amu"
 Output: {{"url": "https://www.amu.ac.in", "confidence": 0.95}}
 
----------------------------------
+
 SHOPPING SPECIAL CASES
----------------------------------
+
 Input: "amazon"
 Output: {{"url": "https://www.amazon.in", "confidence": 0.99}}
 
@@ -172,9 +172,9 @@ Output: {{"url": "https://www.myntra.com", "confidence": 0.99}}
 Input: "ajio"
 Output: {{"url": "https://www.ajio.com", "confidence": 0.99}}
 
----------------------------------
+
 BANKING SPECIAL CASES
----------------------------------
+
 Input: "sbi"
 Output: {{"url": "https://www.onlinesbi.sbi", "confidence": 0.98}}
 
@@ -187,9 +187,9 @@ Output: {{"url": "https://www.icicibank.com", "confidence": 0.98}}
 Input: "axis bank"
 Output: {{"url": "https://www.axisbank.com", "confidence": 0.98}}
 
----------------------------------
+
 OTT SPECIAL CASES
----------------------------------
+
 Input: "netflix"
 Output: {{"url": "https://www.netflix.com", "confidence": 0.99}}
 
@@ -202,9 +202,9 @@ Output: {{"url": "https://www.hotstar.com", "confidence": 0.99}}
 Input: "zee5"
 Output: {{"url": "https://www.zee5.com", "confidence": 0.99}}
 
----------------------------------
+
 TECH SERVICES
----------------------------------
+
 Input: "chatgpt"
 Output: {{"url": "https://chat.openai.com", "confidence": 0.99}}
 
@@ -220,7 +220,7 @@ Output: {{"url": "https://mail.google.com", "confidence": 0.95}}
 Input: "drive"
 Output: {{"url": "https://drive.google.com", "confidence": 0.95}}
 
----------------------------------
+
 
 Now determine the URL for: "{name}"
 """
@@ -310,7 +310,7 @@ Now determine the URL for: "{name}"
                 print(msg)
             return
         
-        if name in ["chrome", "msedge", "firefox"]:
+        if name in ["chrome", "msedge", "firefox", "brave"]:
             os.system(f"start {name}")
             msg = f"✅ Opened {name}\n"
             if input_mode == "voice_continuous":

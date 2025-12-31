@@ -296,7 +296,6 @@ Now determine the URL for: "{name}"
     def open_app_or_website(self, name):
         """Open an application or website"""
         input_mode = Config.get_input_mode()
-        driver = self.driver_manager.get_driver()
         
         # Check if it's an executable
         app_path = shutil.which(name)
@@ -329,6 +328,7 @@ Now determine the URL for: "{name}"
             return
         
         if "youtube" in name:
+            driver = self.driver_manager.get_driver()
             if driver:
                 try:
                     driver.get("https://www.youtube.com")
@@ -350,6 +350,7 @@ Now determine the URL for: "{name}"
             return
         
         if "whatsapp" in name:
+            driver = self.driver_manager.get_driver()
             if driver:
                 try:
                     driver.get("https://web.whatsapp.com")

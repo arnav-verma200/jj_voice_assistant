@@ -27,7 +27,7 @@ class Config:
     # Gemini AI settings
     load_dotenv()
     API_KEY = os.getenv("GEMINI_API_KEY")
-    GEMINI_API_KEY = f"API_KEY"
+    GEMINI_API_KEY = API_KEY
     GEMINI_MODEL = "gemini-2.5-flash"
     
     # Global state

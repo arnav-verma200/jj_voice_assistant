@@ -21,24 +21,18 @@ class InputHandler:
             if voice_input is None:
                 return None
             
-            command = voice_input.lower().replace("jj", "", 1).strip()
+            command = voice_input.lower().strip()
             print(f"⚡ Executing: {command}\n")
             return command
         
         elif self.input_mode == "voice_button":
-            print("\n[Voice Mode - Say 'jj' first]")
+            print("\n[Voice Mode]")
             voice_input = self.voice_input.get_button_input()
             
             if voice_input:
-                voice_input_lower = voice_input.lower().strip()
-                
-                if voice_input_lower.startswith("jj"):
-                    command = voice_input_lower.replace("jj", "", 1).strip()
-                    print(f"\n⚡ Executing: {command}\n")
-                    return command
-                else:
-                    print("❌ Command ignored. Please start with 'jj'")
-                    return ""  # Return empty to continue loop
+                command = voice_input.lower().strip()
+                print(f"\n⚡ Executing: {command}\n")
+                return command
             else:
                 print("❌ No voice command received.")
                 return ""  # Return empty to continue loop
@@ -51,31 +45,26 @@ class InputHandler:
         if self.input_mode == "voice_continuous":
             speak(prompt_text)
             print(f"\n{prompt_text}")
-            print("🎤 Say 'jj' followed by your response...")
+            print("🎤 Listening for your response...")
             
             voice_input = self.voice_input.get_continuous_input(first_run=False)
             if voice_input is None:
                 return None
             
-            response = voice_input.lower().replace("jj", "", 1).strip()
+            response = voice_input.lower().strip()
             print(f"📢 You said: {response}")
             return response
         
         elif self.input_mode == "voice_button":
             speak(prompt_text)
             print(f"\n{prompt_text}")
-            print("Hold SPACE and say 'jj' followed by your response...")
+            print("Hold SPACE and speak your response...")
             
             voice_input = self.voice_input.get_button_input()
             if voice_input:
-                voice_input_lower = voice_input.lower().strip()
-                if voice_input_lower.startswith("jj"):
-                    response = voice_input_lower.replace("jj", "", 1).strip()
-                    print(f"📢 You said: {response}")
-                    return response
-                else:
-                    print("❌ Response ignored. Please start with 'jj'")
-                    return None
+                response = voice_input.lower().strip()
+                print(f"📢 You said: {response}")
+                return response
             return None
         
         else:  # typing mode

@@ -11,3 +11,4 @@ pycaw
 comtypes
 google-genai
 google-generativeai
+python-dotenv

@@ -105,7 +105,6 @@ class VolumeController:
         
         print("✅ Volume control started!")
         print("   👉 Pinch thumb and index finger to adjust volume")
-        print("   👉 Press 'Q' to quit or say 'stop volume'\n")
         
         while self.is_running:
             suc, frame = cap.read()
@@ -150,8 +149,7 @@ class VolumeController:
                                 cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 23), 2)
             
             cv2.imshow(window_name, frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                print("🛑 Volume control stopped (pressed 'Q')")
+            if cv2.waitKey(1) & 0xFF == ord('o'):
                 break
         
         cap.release()

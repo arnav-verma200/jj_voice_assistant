@@ -17,9 +17,9 @@ class VoiceInput:
         self.microphone = sr.Microphone()
     
     def get_continuous_input(self, first_run=False):
-        """Listen continuously for voice commands starting with 'jj'"""
+        """Listen continuously for voice commands"""
         if first_run:
-            speak("Hello I am Jamnalaal Jamdaas in short JJ")
+            speak("Hello, I am your voice assistant")
             time.sleep(0.1)
             print("Calibrating microphone for ambient noise... Please wait...")
             speak("Calibrating microphone, please wait")
@@ -40,7 +40,7 @@ class VoiceInput:
                 with self.microphone as source:
                     if first_run:
                         self.recognizer.adjust_for_ambient_noise(source, duration=0.5)
-                    print("🎤 Listening... say 'jj' to give a command")
+                    print("🎤 Listening for your command...")
                     audio = self.recognizer.listen(
                         source, 
                         timeout=Config.VOICE_LISTEN_TIMEOUT, 
@@ -51,10 +51,7 @@ class VoiceInput:
                     text = self.recognizer.recognize_google(audio)
                     print(f"📢 Heard: {text}")
                     
-                    if text.lower().strip().startswith("jj"):
-                        return text
-                    else:
-                        print("❌ Command ignored (didn't start with 'jj')\n")
+                    return text
                         
             except sr.WaitTimeoutError:
                 continue

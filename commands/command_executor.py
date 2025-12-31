@@ -45,10 +45,10 @@ class CommandExecutor:
             return False
         
         # Volume control commands
-        elif "volume control" in command or "vol control" in command or "start volume" in command:
+        elif "volume control" in command or "vol control" in command or "start volume" in command or "start volume control" in command:
             self.volume.start_volume_control()
         
-        elif "stop volume" in command or "close volume" in command or "exit volume" in command:
+        elif "stop volume" in command or "close volume" in command or "exit volume" in command or "close volume control" in command or "exit volume control" in command:
             self.volume.stop_volume_control()
         
         # WhatsApp message command

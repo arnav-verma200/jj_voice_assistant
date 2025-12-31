@@ -30,6 +30,14 @@ class SpotifyCommands:
             
             time.sleep(2)
             pyautogui.press('enter')
+            time.sleep(1)
+            pyautogui.press('tab')
+            time.sleep(1)
+            pyautogui.press('tab')
+            time.sleep(1)
+            pyautogui.press('tab')
+            time.sleep(1)
+            pyautogui.press('enter')
             
             msg = f"✅ Playing: {query} on Spotify\n"
             if input_mode != "voice_continuous":

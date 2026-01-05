@@ -1,6 +1,8 @@
 # 🤖 JJ Voice Assistant
 
-A powerful voice-controlled browser automation assistant that lets you control Spotify, send WhatsApp messages, play YouTube videos, and browse the web using simple voice commands or text input.
+A powerful voice-controlled browser automation assistant that lets you control Spotify, send WhatsApp messages, play YouTube videos, manage volume with hand gestures, and browse the web using simple voice commands or text input.
+
+---
 
 ## ✨ Features
 
@@ -8,30 +10,25 @@ A powerful voice-controlled browser automation assistant that lets you control S
 - 💬 **WhatsApp Messaging** - Send messages via WhatsApp Web
 - 🎥 **YouTube Player** - Search and play videos
 - 🔍 **Google Search** - Perform web searches
-- 🌐 **Website/App Launcher** - Open websites and applications
+- 🌐 **Smart Website Launcher** - AI-powered URL detection for websites and apps
+- 🎚️ **Gesture Volume Control** - Adjust system volume using hand gestures via webcam
 - 🎤 **Multiple Input Modes** - Voice (continuous or button-triggered) or text
+- 🖥️ **GUI Mode** - Modern graphical interface available
 - 🔒 **Persistent Sessions** - Login once to Google & WhatsApp, credentials saved for future use
 
-## 🎯 Demo
-
-```
-Commands:
-  • play despacito in spotify       - Play song on Spotify
-  • play nodejs tutorial in youtube - Play video on YouTube
-  • message John                     - Send WhatsApp message
-  • search python tutorials          - Google search
-  • open github                      - Open website
-  • spotify pause                    - Pause Spotify
-  • exit                            - Exit program
-```
+---
 
 ## 📋 Prerequisites
 
-- **Python 3.7+**
-- **Google Chrome** (installed at default location)
-- **Spotify Desktop App** (for music playback)
-- **Microphone** (for voice input modes)
-- **WhatsApp Account** (for messaging features)
+- Python 3.7+
+- Google Chrome (installed)
+- Spotify Desktop App (for music playback)
+- Microphone (for voice input modes)
+- Webcam (for gesture volume control)
+- WhatsApp Account (for messaging features)
+- Gemini API Key (optional, for AI-powered URL detection)
+
+---
 
 ## 🚀 Installation
 
@@ -48,124 +45,215 @@ cd jj-voice-assistant
 pip install -r requirements.txt
 ```
 
-**Note for Windows users:** PyAudio installation might require additional steps. If you encounter issues:
+**For Windows users with PyAudio issues:**
 
 ```bash
 pip install pipwin
 pipwin install pyaudio
 ```
 
-### 3. Chrome Path Configuration
+### 3. Setup Gemini API (Optional)
 
-The default Chrome path is set for Windows. If your Chrome is installed elsewhere, update `config.py`:
+Create a `.env` file in the project root:
+
+```env
+GEMINI_API_KEY=your_api_key_here
+```
+
+Get your free API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
+
+### 4. Configure Chrome Path (if needed)
+
+If Chrome is not installed at the default location, edit `config.py`:
 
 ```python
-CHROME_PATH = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+CHROME_PATH = r"C:\Your\Custom\Path\chrome.exe"
 ```
+
+---
 
 ## 🎮 Usage
 
-### Starting the Assistant
+### CLI Mode
 
 ```bash
 python main.py
 ```
 
-### Input Modes
+**Select Input Mode:**
+- `1` - Continuous Voice Control (Always Listening - say "jj" before commands)
+- `2` - Button Voice Control (Hold Alt+A to speak)
+- `3` - Typing Mode
 
-You'll be prompted to choose an input mode:
-
-#### 1. **Continuous Voice Control** (Always Listening)
-- The assistant continuously listens for commands
-- Always start commands with "jj" (e.g., "jj play despacito in spotify")
-- Press **ESC** to stop listening and exit
-
-#### 2. **Button Voice Control** (Push-to-Talk)
-- Hold **SPACE** to speak your command
-- Release to transcribe
-- Always start commands with "jj"
-- Press **ESC** to cancel
-
-#### 3. **Typing Mode**
-- Type commands directly
-- No need to say "jj" prefix
-
-## 📝 Command Reference
-
-### Spotify Commands
+### GUI Mode
 
 ```bash
-play <song name> in spotify    # Play a specific song
-play <song name> on spotify    # Alternative syntax
-spotify pause                  # Pause playback
-spotify play                   # Resume playback
-spotify next                   # Next track
-spotify previous               # Previous track
-pause                         # Quick pause
-next                          # Quick next
-previous                      # Quick previous
-open spotify                  # Open Spotify app
+python gui.py
 ```
 
-### YouTube Commands
+---
+
+## 📝 Commands Reference
+
+### 🎵 Spotify Commands
 
 ```bash
-play <video name> in youtube   # Search and play video
-play <video name> on youtube   # Alternative syntax
+# Play Songs
+play despacito in spotify
+play shape of you on spotify
+play bohemian rhapsody in spotify
+
+# Playback Control
+spotify pause              # Pause playback
+spotify play               # Resume playback
+spotify next               # Next track
+spotify previous           # Previous track
+spotify prev               # Previous track (short)
+spotify back               # Previous track (alternative)
+
+# Quick Controls (without "spotify" prefix)
+pause                      # Pause current playback
+next                       # Skip to next track
+previous                   # Go to previous track
+skip                       # Skip track
+go back                    # Previous track
+
+# App Control
+open spotify               # Launch Spotify app
 ```
 
-### WhatsApp Commands
+### 🎥 YouTube Commands
 
 ```bash
-message <contact name>         # Send message to contact
+# Play Videos
+play nodejs tutorial in youtube
+play funny cats on youtube
+play how to cook pasta in youtube
+
+# Alternative Syntax
+play meditation music on youtube
+play workout video on youtube
+
+# Open YouTube
+open youtube
 ```
 
-**Important:** WhatsApp will automatically select the **first search result**. Make sure to use distinctive contact names.
-
-### Browser Commands
+### 💬 WhatsApp Commands
 
 ```bash
-search <query>                 # Google search
-open <website/app>             # Open website or application
+# Send Message (Interactive)
+message John               # Send message to John
+message Mom                # Send message to Mom
+message Sarah              # Send message to Sarah
+
+# Process:
+# 1. Assistant searches for contact
+# 2. Automatically selects FIRST result
+# 3. Asks you for the message
+# 4. Sends the message
+
+# Note: WhatsApp automatically selects the first search result
 ```
 
-Examples:
-- `search python tutorials`
-- `open github`
-- `open youtube`
-- `open notepad`
-
-### System Commands
+### 🌐 Browser & Search Commands
 
 ```bash
-exit                          # Exit the assistant
+# Google Search
+search python tutorials
+search best restaurants
+search latest news
+search how to code
+
+# Open Websites (AI-Powered)
+open youtube
+open github
+open facebook
+open instagram
+open twitter
+open reddit
+open netflix
+open amazon
+open flipkart
+
+# Open Government Sites
+open sih                   # Smart India Hackathon
+open aadhaar              # UIDAI portal
+open passport             # Passport Seva
+open digilocker           # DigiLocker
+open cowin                # CoWIN portal
+open pan card             # PAN services
+
+# Open Exam/Education Portals
+open jee mains            # JEE Mains portal
+open jee advanced         # JEE Advanced portal
+open neet                 # NEET exam portal
+open cuet                 # CUET portal
+open gate                 # GATE exam portal
+open upsc                 # UPSC portal
+open ssc                  # SSC portal
+
+# Open College/University Sites
+open iit bombay
+open iit delhi
+open nit warangal
+open vit vellore
+open jiit 62
+
+# Open Banking Sites
+open sbi
+open hdfc bank
+open icici
+open axis bank
+
+# Open OTT Platforms
+open netflix
+open amazon prime
+open hotstar
+open zee5
+
+# Open Tech Services
+open chatgpt
+open claude
+open gemini
+open gmail
+open drive
+
+# Open Any Website
+open example.com           # Opens any domain
+open website.co.in        # Supports all TLDs
 ```
 
-## 🏗️ Project Structure
+### 🎚️ Volume Control Commands
 
+```bash
+# Start Gesture Control
+volume control
+vol control
+start volume
+start volume control
+
+# Stop Gesture Control
+stop volume
+close volume
+exit volume
+close volume control
+exit volume control
+
+# How It Works:
+# - Uses webcam to track hand gestures
+# - Pinch thumb and index finger together
+# - Move fingers apart = increase volume
+# - Move fingers closer = decrease volume
+# - Distance controls volume (0-100%)
 ```
-jj-voice-assistant/
-│
-├── main.py                   # Application entry point
-├── config.py                 # Configuration settings
-├── requirements.txt          # Python dependencies
-├── README.md                # Documentation
-│
-├── commands/                # Command handlers
-│   ├── __init__.py
-│   ├── command_executor.py  # Main command router
-│   ├── spotify_commands.py  # Spotify operations
-│   ├── whatsapp_commands.py # WhatsApp operations
-│   ├── youtube_commands.py  # YouTube operations
-│   └── browser_commands.py  # Browser/search operations
-│
-└── utils/                   # Utility modules
-    ├── __init__.py
-    ├── driver_manager.py    # Selenium WebDriver management
-    ├── input_handler.py     # Input mode handling
-    ├── voice_input.py       # Voice recognition
-    └── tts.py              # Text-to-speech
+
+### 🚪 System Commands
+
+```bash
+exit                       # Exit the assistant
 ```
+
+---
 
 ## ⚙️ Configuration
 
@@ -176,89 +264,135 @@ Edit `config.py` to customize:
 CHROME_PATH = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
 
 # Voice settings
-SPEECH_RATE = 175           # TTS speech rate
-SPEECH_VOLUME = 0.9         # TTS volume (0.0 to 1.0)
+SPEECH_RATE = 175          # TTS speech rate
+SPEECH_VOLUME = 0.9        # TTS volume (0.0 to 1.0)
 
 # Timeout settings
-VOICE_LISTEN_TIMEOUT = 10   # Voice listening timeout
-WHATSAPP_QR_SCAN_TIMEOUT = 120  # WhatsApp QR scan timeout
+VOICE_LISTEN_TIMEOUT = 10
+WHATSAPP_QR_SCAN_TIMEOUT = 120
 ```
 
-## 🔧 First-Time Setup
+---
 
-### Google Account
-When Chrome opens for the first time, sign in to your Google account. Your session will be saved for future use.
+## 🔑 First-Time Setup
 
-### WhatsApp Web
-1. The first time you use WhatsApp commands, WhatsApp Web will open
-2. Scan the QR code with your phone
-3. Your session will be saved for future use
+### 1. Google Account
+- Chrome will open automatically
+- Sign in to your Google account
+- Your session will be saved for future use
 
-### Spotify
-Ensure Spotify desktop app is installed on your system. The assistant uses Spotify's URI protocol to control playback.
+### 2. WhatsApp Web
+- First WhatsApp command opens WhatsApp Web
+- Scan the QR code with your phone
+- Session persists across restarts
 
-## 🐛 Troubleshooting
+### 3. Spotify Desktop
+- Install Spotify Desktop App from [spotify.com](https://www.spotify.com/download/)
+- No additional login required in assistant
 
-### Microphone Not Working
-- Check if your microphone is properly connected
-- Grant microphone permissions to Python
-- Adjust `MICROPHONE_CALIBRATION_DURATION` in `config.py`
+---
 
-### Chrome Not Opening
-- Verify Chrome installation path in `config.py`
-- Ensure ChromeDriver is compatible with your Chrome version
-- Check if Chrome is already running with incompatible flags
+## 📁 Project Structure
 
-### Spotify Not Responding
-- Ensure Spotify desktop app is installed
-- Verify Spotify is not blocked by firewall
-- Try opening Spotify manually first
-
-### WhatsApp Issues
-- Ensure you're logged into WhatsApp Web
-- Check your internet connection
-- Increase `WHATSAPP_LOGIN_TIMEOUT` in `config.py` if needed
-
-### Voice Recognition Errors
-```bash
-# Install/reinstall PyAudio
-pip uninstall pyaudio
-pip install pyaudio
-
-# Or use pipwin on Windows
-pip install pipwin
-pipwin install pyaudio
 ```
+jj-voice-assistant/
+│
+├── main.py                   # CLI entry point
+├── gui.py                    # GUI entry point
+├── config.py                 # Configuration
+├── requirements.txt          # Dependencies
+├── .env                      # API keys
+│
+├── commands/                 # Command handlers
+│   ├── command_executor.py
+│   ├── spotify_commands.py
+│   ├── whatsapp_commands.py
+│   ├── youtube_commands.py
+│   ├── browser_commands.py
+│   └── volume_commands.py
+│
+└── utils/                    # Utilities
+    ├── driver_manager.py
+    ├── input_handler.py
+    ├── voice_input.py
+    └── tts.py
+```
+
+---
+
+## 💡 Important Notes
+
+### Voice Mode Tips
+- **Continuous Mode**: Always say "jj" before your command (e.g., "jj play despacito in spotify")
+- **Button Mode**: Hold Alt+A while speaking
+- Press **ESC** to stop voice mode at any time
+
+### WhatsApp Messaging
+- The assistant automatically selects the **first search result**
+- Use distinctive contact names to avoid confusion
+- Make sure you're logged into WhatsApp Web on your phone
+
+### Volume Control
+- Requires a working webcam
+- Good lighting improves gesture detection
+- Pinch thumb and index finger to control
+- Press 'o' to close the volume control window
+
+### Spotify Control
+- Requires Spotify **Desktop App** (not web player)
+- Media keys are used for playback control
+- Works even when Spotify is in background
+
+### AI-Powered URL Detection
+- Requires Gemini API key in `.env` file
+- Supports 1000+ popular websites
+- Falls back to standard method if AI unavailable
+- Free tier: 60 requests per minute
+
+---
 
 ## 🔐 Privacy & Security
 
-- Chrome sessions are stored locally in `ChromeAutomation` folder in your home directory
-- No credentials or personal data are transmitted outside your local machine
-- WhatsApp and Google sessions are maintained by Selenium for automation purposes
+- All Chrome sessions are stored locally in `ChromeAutomation` folder
+- No credentials are transmitted outside your local machine
+- WhatsApp and Google sessions maintained by Selenium
 - You can clear saved sessions by deleting the `ChromeAutomation` folder
 
-## 🛠️ Dependencies
+**Clear Sessions:**
+```bash
+# Windows
+rmdir /s "%USERPROFILE%\ChromeAutomation"
 
-- **selenium** - Browser automation
-- **webdriver-manager** - Automatic ChromeDriver management
-- **SpeechRecognition** - Voice recognition
-- **keyboard** - Keyboard event handling
-- **pyttsx3** - Text-to-speech
-- **pyautogui** - GUI automation for Spotify controls
-- **PyAudio** - Microphone access
+# Linux/Mac
+rm -rf ~/ChromeAutomation
+```
 
-## 🤝 Contributing
+---
 
-Contributions are welcome! Here are some ways you can contribute:
+## 📦 Dependencies
 
-1. Report bugs and issues
-2. Suggest new features
-3. Submit pull requests
-4. Improve documentation
+- selenium
+- webdriver-manager
+- SpeechRecognition
+- keyboard
+- pyttsx3
+- pyautogui
+- PyAudio
+- opencv-python
+- mediapipe
+- pycaw
+- comtypes
+- google-generativeai
+- python-dotenv
+- PySide6 (for GUI mode)
+
+---
 
 ## 📄 License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is open source and available under the MIT License.
+
+---
 
 ## ⚠️ Disclaimer
 
@@ -268,19 +402,6 @@ This project is for educational purposes. Be mindful of:
 - Rate limiting and automation restrictions
 - Responsible use of automation tools
 
-## 👨‍💻 Author
-
-Created with ❤️ by JJ Voice Assistant Team
-
-## 🙏 Acknowledgments
-
-- Google Speech Recognition API
-- Selenium WebDriver
-- pyttsx3 for TTS capabilities
-- All open-source contributors
-
 ---
 
 **Happy Automating! 🚀**
-
-For issues and feature requests, please open an issue on GitHub.

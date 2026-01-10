@@ -404,4 +404,4 @@ This project is for educational purposes. Be mindful of:
 
 ---
 
-**Happy Automating! 🚀**
+**Happy Automating!**

@@ -4,10 +4,15 @@ Configuration settings for JJ Voice Assistant
 
 import os
 from dotenv import load_dotenv
-from utils.utils_frozen import get_env_file_path, is_frozen
 
 class Config:
     """Global configuration settings"""
+    
+    @staticmethod
+    def _get_frozen_utils():
+        """Lazy import of frozen utils to avoid circular dependency"""
+        from utils.utils_frozen import get_env_file_path, is_frozen
+        return get_env_file_path, is_frozen
     
     # Chrome settings - auto-detect Chrome installation
     @staticmethod
@@ -43,15 +48,23 @@ class Config:
     
     # Gemini AI settings
     # Load .env from executable directory in frozen mode, current dir otherwise
-    env_path = get_env_file_path()
-    if os.path.exists(env_path):
-        load_dotenv(env_path)
-    else:
-        load_dotenv()  # Try default location
-    
-    API_KEY = os.getenv("GEMINI_API_KEY")
-    GEMINI_API_KEY = API_KEY
+    @classmethod
+    def load_config(cls):
+        """Initialize configuration (handling .env and API keys)"""
+        get_env_file_path, _ = cls._get_frozen_utils()
+        env_path = get_env_file_path()
+        if os.path.exists(env_path):
+            load_dotenv(env_path)
+        else:
+            load_dotenv()  # Try default location
+        
+        cls.API_KEY = os.getenv("GEMINI_API_KEY")
+        cls.GEMINI_API_KEY = cls.API_KEY
+
+    # Call it once to initialize
     GEMINI_MODEL = "gemini-2.5-flash"
+    API_KEY = None
+    GEMINI_API_KEY = None
     
     # Global state
     _input_mode = None

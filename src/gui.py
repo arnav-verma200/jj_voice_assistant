@@ -230,6 +230,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 def main():
+    Config.load_config()
     app = QtWidgets.QApplication(sys.argv)
 
     # Redirect stdout/stderr to the GUI log

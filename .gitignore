@@ -1,19 +1,42 @@
-__pycache__/config.cpython-311.pyc
-commands/__pycache__/browser_commands.cpython-311.pyc
-commands/__pycache__/volume_commands.cpython-311.pyc
-commands/__pycache__/browser_commands.cpython-311.pyc
-commands/__pycache__/volume_commands.cpython-311.pyc
-commands/__pycache__/browser_commands.cpython-311.pyc
-commands/__pycache__/volume_commands.cpython-311.pyc
-commands/__pycache__/browser_commands.cpython-311.pyc
-commands/__pycache__/volume_commands.cpython-311.pyc
-commands/__pycache__/browser_commands.cpython-311.pyc
-commands/__pycache__/volume_commands.cpython-311.pyc
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# PyInstaller
+*.spec.bak
+build/
+dist/
+
+# Environment variables
 .env
-commands/__pycache__/browser_commands.cpython-311.pyc
-utils/__pycache__/input_handler.cpython-311.pyc
-utils/__pycache__/tts.cpython-311.pyc
-utils/__pycache__/voice_input.cpython-311.pyc
-node_modules
-utils/__pycache__/voice_input.cpython-311.pyc
-utils/__pycache__/voice_input.cpython-311.pyc
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+ChromeAutomation/
+node_modules/
+
+# Logs
+*.log

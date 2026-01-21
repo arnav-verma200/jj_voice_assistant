@@ -18,19 +18,49 @@ A powerful voice-controlled browser automation assistant that lets you control S
 
 ---
 
+## 📥 Download (For Users)
+
+**Want to use JJ Voice Assistant without installing Python?**
+
+Download the latest Windows executable from the [Releases page](https://github.com/yourusername/jj-voice-assistant/releases).
+
+Two versions available:
+- **jj_voice_assistant_cli.exe** - Command-line interface
+- **jj_voice_assistant_gui.exe** - Graphical interface
+
+📖 See [docs/SETUP_GUIDE.txt](docs/SETUP_GUIDE.txt) for installation instructions.
+
+---
+
 ## 📋 Prerequisites
 
+### For Executable Users (No Python Required)
+
+- ✅ Windows 10 or later
+- ✅ Google Chrome ([Download](https://www.google.com/chrome/))
+- ✅ Spotify Desktop App ([Download](https://www.spotify.com/download/))
+- ✅ Microphone (for voice input modes)
+- ✅ Webcam (for gesture volume control)
+- ✅ WhatsApp Account (for messaging features)
+- ✅ Gemini API Key (optional, for AI-powered URL detection)
+
+### For Developers (Running from Source)
+
 - Python 3.7+
-- Google Chrome (installed)
-- Spotify Desktop App (for music playback)
-- Microphone (for voice input modes)
-- Webcam (for gesture volume control)
-- WhatsApp Account (for messaging features)
-- Gemini API Key (optional, for AI-powered URL detection)
+- All of the above
 
 ---
 
 ## 🚀 Installation
+
+### Option 1: Download Executable (Recommended for Users)
+
+1. Download the latest release from [Releases](https://github.com/yourusername/jj-voice-assistant/releases)
+2. Extract the ZIP file
+3. Read `docs/SETUP_GUIDE.txt` for detailed instructions
+4. Run `jj_voice_assistant_cli.exe` or `jj_voice_assistant_gui.exe`
+
+### Option 2: Run from Source (For Developers)
 
 ### 1. Clone the Repository
 
@@ -62,9 +92,9 @@ GEMINI_API_KEY=your_api_key_here
 
 Get your free API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
 
-### 4. Configure Chrome Path (if needed)
+### 4. Configure Chrome Path (Optional)
 
-If Chrome is not installed at the default location, edit `config.py`:
+Chrome is auto-detected in most cases. If you have a custom installation, edit `src/config.py`:
 
 ```python
 CHROME_PATH = r"C:\Your\Custom\Path\chrome.exe"
@@ -77,7 +107,7 @@ CHROME_PATH = r"C:\Your\Custom\Path\chrome.exe"
 ### CLI Mode
 
 ```bash
-python main.py
+python src/main.py
 ```
 
 **Select Input Mode:**
@@ -88,7 +118,7 @@ python main.py
 ### GUI Mode
 
 ```bash
-python gui.py
+python src/gui.py
 ```
 
 ---
@@ -297,25 +327,25 @@ WHATSAPP_QR_SCAN_TIMEOUT = 120
 ```
 jj-voice-assistant/
 │
-├── main.py                   # CLI entry point
-├── gui.py                    # GUI entry point
-├── config.py                 # Configuration
+├── src/                      # Core Source Code
+│   ├── main.py               # CLI entry point
+│   ├── gui.py                # GUI entry point
+│   ├── config.py             # Configuration
+│   ├── commands/             # Command handlers
+│   └── utils/                # Utilities
+│
+├── deployment/               # Build tools & scripts
+│   ├── build.py              # Build automation script
+│   ├── build_cli.spec        # CLI build config
+│   ├── build_gui.spec        # GUI build config
+│   └── BUILD_GUIDE.md        # Technical guide for builds
+│
+├── docs/                     # User documentation
+│   └── SETUP_GUIDE.txt       # Guide for end users
+│
 ├── requirements.txt          # Dependencies
-├── .env                      # API keys
-│
-├── commands/                 # Command handlers
-│   ├── command_executor.py
-│   ├── spotify_commands.py
-│   ├── whatsapp_commands.py
-│   ├── youtube_commands.py
-│   ├── browser_commands.py
-│   └── volume_commands.py
-│
-└── utils/                    # Utilities
-    ├── driver_manager.py
-    ├── input_handler.py
-    ├── voice_input.py
-    └── tts.py
+├── .env.example              # API key template
+└── README.md                 # Project overview
 ```
 
 ---

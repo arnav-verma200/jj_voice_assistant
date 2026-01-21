@@ -12,3 +12,5 @@ comtypes
 google-genai
 google-generativeai
 python-dotenv
+PySide6
+pyinstaller

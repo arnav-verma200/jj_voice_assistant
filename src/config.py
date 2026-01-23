@@ -25,7 +25,15 @@ class Config:
         # Define browser search paths with priority order
         browsers = [
 
-
+            # Brave Browser paths
+            (r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe", "brave"),
+            (os.path.expanduser(r"~\AppData\Local\BraveSoftware\Brave-Browser\Application\brave.exe"), "brave"),
+            
+            # Chrome paths
+            (r"C:\Program Files\Google\Chrome\Application\chrome.exe", "chrome"),
+            (r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", "chrome"),
+            (os.path.expanduser(r"~\AppData\Local\Google\Chrome\Application\chrome.exe"), "chrome"),
+            
             # Microsoft Edge paths (good fallback, comes pre-installed on Windows 10/11)
             (r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe", "edge"),
             (r"C:\Program Files\Microsoft\Edge\Application\msedge.exe", "edge"),

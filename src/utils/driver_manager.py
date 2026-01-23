@@ -29,9 +29,17 @@ class DriverManager:
         self.whatsapp_logged_in = False
     
     def get_driver(self):
-        """Get or create WebDriver instance"""
+        if self.driver:
+            # Try to check if session is still alive
+            try:
+                self.driver.current_url  # This will fail if session is dead
+            except:
+                # Session is dead, clean up and create new one
+                self.driver = None
+    
         if not self.driver:
             self.driver = self._create_driver()
+    
         return self.driver
     
     def _create_driver(self):

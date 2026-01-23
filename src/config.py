@@ -14,24 +14,43 @@ class Config:
         from utils.utils_frozen import get_env_file_path, is_frozen
         return get_env_file_path, is_frozen
     
-    # Chrome settings - auto-detect Chrome installation
+    # Browser settings - auto-detect browser installation
     @staticmethod
-    def _find_chrome_path():
-        """Find Chrome installation path"""
-        possible_paths = [
-            r"C:\Program Files\Google\Chrome\Application\chrome.exe",
-            r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
-            os.path.expanduser(r"~\AppData\Local\Google\Chrome\Application\chrome.exe"),
+    def _find_browser():
+        """
+        Find available browser installation.
+        Returns tuple: (browser_path, browser_type)
+        browser_type can be: 'chrome', 'edge', 'brave', 'chromium'
+        """
+        # Define browser search paths with priority order
+        browsers = [
+
+
+            # Microsoft Edge paths (good fallback, comes pre-installed on Windows 10/11)
+            (r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe", "edge"),
+            (r"C:\Program Files\Microsoft\Edge\Application\msedge.exe", "edge"),
+
+            # Chromium paths
+            (os.path.expanduser(r"~\AppData\Local\Chromium\Application\chrome.exe"), "chromium"),
         ]
         
-        for path in possible_paths:
+        # Search for first available browser
+        for path, browser_type in browsers:
             if os.path.exists(path):
-                return path
+                return path, browser_type
         
-        # Return default and let it fail with helpful error message
-        return r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+        # No browser found - return None
+        return None, None
     
-    CHROME_PATH = _find_chrome_path.__func__()
+    # Initialize browser detection
+    _browser_result = _find_browser.__func__()
+    BROWSER_PATH = _browser_result[0]
+    BROWSER_TYPE = _browser_result[1]
+    
+    # Backwards compatibility - keep CHROME_PATH variable
+    CHROME_PATH = BROWSER_PATH
+    
+    # User data directory (works for all Chromium-based browsers)
     USER_DATA_DIR = os.path.join(os.path.expanduser("~"), "ChromeAutomation")
     
     # Voice settings
@@ -60,6 +79,20 @@ class Config:
         
         cls.API_KEY = os.getenv("GEMINI_API_KEY")
         cls.GEMINI_API_KEY = cls.API_KEY
+        
+        # Display browser detection result
+        if cls.BROWSER_PATH:
+            print(f"✓ Detected browser: {cls.BROWSER_TYPE.upper()} at {cls.BROWSER_PATH}")
+        else:
+            print("\n" + "="*60)
+            print("❌ ERROR: No supported browser found!")
+            print("="*60)
+            print("Please install one of the following browsers:")
+            print("  • Google Chrome (recommended)")
+            print("  • Microsoft Edge")
+            print("  • Brave Browser")
+            print("  • Chromium")
+            print("="*60 + "\n")
 
     # Call it once to initialize
     GEMINI_MODEL = "gemini-2.5-flash"

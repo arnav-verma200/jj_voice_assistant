@@ -67,6 +67,8 @@ def main():
     """Main application loop"""
     try:
         Config.load_config()
+        print(f"Browser: {Config.BROWSER_TYPE}")
+        print(f"Path: {Config.BROWSER_PATH}")
         print_welcome_banner()
         input_mode = get_input_mode()
         print_commands()
